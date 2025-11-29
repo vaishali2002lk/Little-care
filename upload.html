@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetty Tracker hehe‪‪❤︎</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .love-note {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .task-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .task-section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .task-icon {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+
+        .camera-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        video {
+            max-width: 100%;
+            border-radius: 15px;
+            background: #000;
+            display: none;
+            margin: 10px 0;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-capture {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-upload {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .preview-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 15px;
+            margin: 10px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gallery-item .date-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .gallery-item:hover .delete-btn {
+            display: block;
+        }
+
+        .streak-counter {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .streak-counter .number {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-card.outfit {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card.bath {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-card.laundry {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-card .stat-label {
+            font-size: 1em;
+            margin-top: 5px;
+        }
+
+        .dress-counter {
+            background: #fff;
+            border: 2px solid #667eea;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .dress-counter input {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.5em;
+            text-align: center;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+
+        .dress-counter label {
+            font-size: 1.1em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .reminder-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .laundry-warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Jetty Tracker hehe‪‪❤︎</h1>
+            <p>Because I care about you staying fresh and fabulous! 🌟</p>
+        </div>
+
+        <div class="love-note">
+            ❤️ I know Luxembourg is super cold, but please change your damn jetty😒💕
+            <br><br>
+            📋 <strong>Your Tasks:</strong> Daily jetty change 🩲 | Bath every other day 🛁 | Weekly laundry 🧺
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card outfit">
+                <span class="stat-number" id="outfitStreak">0</span>
+                <span class="stat-label">🔥 Jetty Change Streak<br>(Daily - Every Day!)</span>
+            </div>
+            <div class="stat-card bath">
+                <span class="stat-number" id="bathStreak">0</span>
+                <span class="stat-label">🛁 Bath Streak<br>(Every Other Day)</span>
+            </div>
+            <div class="stat-card laundry">
+                <span class="stat-number" id="laundryCount">0</span>
+                <span class="stat-label">🧺 Laundries Done<br>(Weekly Goal)</span>
+            </div>
+        </div>
+
+        <!-- Bath Photo Section -->
+        <div class="task-section">
+            <h2>
+                <span class="task-icon">🛁</span>Bath Photo 
+                <span id="bathReminder" class="reminder-badge" style="display: none;">Due Today!</span>
+            </h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Bath every <strong>alternate day</strong> to stay fresh and healthy! 📸
+                <span id="bathStatus" style="font-weight: bold;"></span>
+            </p>
+            
+            <div class="camera-container">
+                <video id="bathVideo" autoplay></video>
+                <canvas id="bathCanvas"></canvas>
+                
+                <div>
+                    <button class="btn" id="bathCameraBtn" onclick="startCamera('bath')">📷 Open Camera</button>
+                    <button class="btn btn-capture" id="bathCaptureBtn" onclick="capturePhoto('bath')" style="display: none;">📸 Take Photo</button>
+                    <button class="btn" id="bathStopBtn" onclick="stopCamera('bath')" style="display: none;">❌ Close Camera</button>
+                    <label for="bathFileInput" class="upload-label">📁 Upload Photo</label>
+                    <input type="file" id="bathFileInput" class="file-input" accept="image/*" onchange="handleFileUpload('bath', this)">
+                </div>
+                
+                <div class="preview-container" id="bathPreview"></div>
+                <button class="btn" id="bathSaveBtn" onclick="savePhoto('bath')" style="display: none;">💾 Save Bath Photo</button>
+            </div>
+
+            <div class="message" id="bathMessage"></div>
+            
+            <div class="gallery" id="bathGallery"></div>
+        </div>
+
+        <!-- Outfit Photo Section -->
+        <div class="task-section">
+            <h2>
+                <span class="task-icon">🩲</span>Daily Jetty Change Photo
+                <span id="outfitReminder" class="reminder-badge" style="display: none;">Due Today!</span>
+            </h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Change your Jetty <strong>EVERY SINGLE DAY</strong> - even if you don't bath!😊
+                <span id="outfitStatus" style="font-weight: bold;"></span>
+            </p>
+            
+            <div class="camera-container">
+                <video id="outfitVideo" autoplay></video>
+                <canvas id="outfitCanvas"></canvas>
+                
+                <div>
+                    <button class="btn" id="outfitCameraBtn" onclick="startCamera('outfit')">📷 Open Camera</button>
+                    <button class="btn btn-capture" id="outfitCaptureBtn" onclick="capturePhoto('outfit')" style="display: none;">📸 Take Photo</button>
+                    <button class="btn" id="outfitStopBtn" onclick="stopCamera('outfit')" style="display: none;">❌ Close Camera</button>
+                    <label for="outfitFileInput" class="upload-label">📁 Upload Photo</label>
+                    <input type="file" id="outfitFileInput" class="file-input" accept="image/*" onchange="handleFileUpload('outfit', this)">
+                </div>
+                
+                <div class="preview-container" id="outfitPreview"></div>
+                <button class="btn" id="outfitSaveBtn" onclick="savePhoto('outfit')" style="display: none;">💾 Save Outfit Photo</button>
+            </div>
+
+            <div class="message" id="outfitMessage"></div>
+            
+            <div class="gallery" id="outfitGallery"></div>
+        </div>
+
+        <!-- Laundry Photo Section -->
+        <div class="task-section">
+            <h2>
+                <span class="task-icon">🧺</span>Weekly Laundry Photo
+                <span id="laundryReminder" class="reminder-badge" style="display: none;">Due This Week!</span>
+            </h2>
+            <p style="margin-bottom: 15px; color: #666;">
+                Move your ass<strong>once a week</strong> You lazy ass!!! Please take a photo of your washing machine with your cothes in it🧼✨
+                <span id="laundryStatus" style="font-weight: bold;"></span>
+            </p>
+
+            <div id="laundryWarningBox" class="laundry-warning" style="display: none;">
+                ⚠️ <strong>Warning:</strong> You've changed jetty on <span id="outfitsSinceLastLaundry">0</span> days since your last laundry. 
+                Time to wash those clothes! 🧺
+            </div>
+            
+            <div class="camera-container">
+                <video id="laundryVideo" autoplay></video>
+                <canvas id="laundryCanvas"></canvas>
+                
+                <div>
+                    <button class="btn" id="laundryCameraBtn" onclick="startCamera('laundry')">📷 Open Camera</button>
+                    <button class="btn btn-capture" id="laundryCaptureBtn" onclick="capturePhoto('laundry')" style="display: none;">📸 Take Photo</button>
+                    <button class="btn" id="laundryStopBtn" onclick="stopCamera('laundry')" style="display: none;">❌ Close Camera</button>
+                    <label for="laundryFileInput" class="upload-label">📁 Upload Photo</label>
+                    <input type="file" id="laundryFileInput" class="file-input" accept="image/*" onchange="handleFileUpload('laundry', this)">
+                </div>
+                
+                <div class="preview-container" id="laundryPreview"></div>
+                <button class="btn" id="laundrySaveBtn" onclick="savePhoto('laundry')" style="display: none;">💾 Save Laundry Photo</button>
+            </div>
+
+            <div class="message" id="laundryMessage"></div>
+            
+            <div class="gallery" id="laundryGallery"></div>
+        </div>
+    </div>
+
+    <script>
+        let bathStream = null;
+        let outfitStream = null;
+        let laundryStream = null;
+        let bathPhotoData = null;
+        let outfitPhotoData = null;
+        let laundryPhotoData = null;
+
+        // Load saved photos on page load
+        window.onload = function() {
+            loadGallery('bath');
+            loadGallery('outfit');
+            loadGallery('laundry');
+            updateAllStats();
+            checkTaskStatus();
+            loadTotalDresses();
+        };
+
+        async function startCamera(type) {
+            try {
+                const video = document.getElementById(`${type}Video`);
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user' },
+                    audio: false 
+                });
+                
+                video.srcObject = stream;
+                video.style.display = 'block';
+                
+                if (type === 'bath') {
+                    bathStream = stream;
+                } else if (type === 'outfit') {
+                    outfitStream = stream;
+                } else {
+                    laundryStream = stream;
+                }
+                
+                document.getElementById(`${type}CameraBtn`).style.display = 'none';
+                document.getElementById(`${type}CaptureBtn`).style.display = 'inline-block';
+                document.getElementById(`${type}StopBtn`).style.display = 'inline-block';
+            } catch (error) {
+                showMessage(type, 'Error accessing camera: ' + error.message, 'warning');
+            }
+        }
+
+        function stopCamera(type) {
+            const video = document.getElementById(`${type}Video`);
+            let stream;
+            
+            if (type === 'bath') {
+                stream = bathStream;
+            } else if (type === 'outfit') {
+                stream = outfitStream;
+            } else {
+                stream = laundryStream;
+            }
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                video.style.display = 'none';
+                
+                if (type === 'bath') {
+                    bathStream = null;
+                } else if (type === 'outfit') {
+                    outfitStream = null;
+                } else {
+                    laundryStream = null;
+                }
+            }
+            
+            document.getElementById(`${type}CameraBtn`).style.display = 'inline-block';
+            document.getElementById(`${type}CaptureBtn`).style.display = 'none';
+            document.getElementById(`${type}StopBtn`).style.display = 'none';
+        }
+
+        function capturePhoto(type) {
+            const video = document.getElementById(`${type}Video`);
+            const canvas = document.getElementById(`${type}Canvas`);
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            const photoData = canvas.toDataURL('image/jpeg');
+            
+            if (type === 'bath') {
+                bathPhotoData = photoData;
+            } else if (type === 'outfit') {
+                outfitPhotoData = photoData;
+            } else {
+                laundryPhotoData = photoData;
+            }
+            
+            displayPreview(type, photoData);
+            stopCamera(type);
+        }
+
+        function handleFileUpload(type, input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoData = e.target.result;
+                    
+                    if (type === 'bath') {
+                        bathPhotoData = photoData;
+                    } else if (type === 'outfit') {
+                        outfitPhotoData = photoData;
+                    } else {
+                        laundryPhotoData = photoData;
+                    }
+                    
+                    displayPreview(type, photoData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function displayPreview(type, photoData) {
+            const preview = document.getElementById(`${type}Preview`);
+            preview.innerHTML = `<img src="${photoData}" class="preview-image" alt="${type} photo preview">`;
+            document.getElementById(`${type}SaveBtn`).style.display = 'inline-block';
+        }
+
+        function savePhoto(type) {
+            const photoData = type === 'bath' ? bathPhotoData : (type === 'outfit' ? outfitPhotoData : laundryPhotoData);
+            
+            if (!photoData) {
+                showMessage(type, 'Please take or upload a photo first!', 'warning');
+                return;
+            }
+            
+            const today = new Date().toLocaleDateString('en-GB');
+            const photos = JSON.parse(localStorage.getItem(`${type}Photos`) || '{}');
+            
+            // Check if photo already exists for today
+            if (type === 'outfit' && photos[today]) {
+                showMessage(type, 'You already uploaded a jetty change photo today! 🩲', 'warning');
+                return;
+            }
+            
+            if (type === 'bath') {
+                // Check if bath is needed today (alternate day logic)
+                if (!isBathDueToday() && photos[today]) {
+                    showMessage(type, 'Bath not needed today! You can skip this day. 😊', 'warning');
+                    return;
+                }
+            }
+            
+            if (type === 'laundry') {
+                // Check if laundry was already done this week
+                const thisWeekLaundry = getThisWeekLaundry();
+                if (thisWeekLaundry.length > 0 && !confirm('You already did laundry this week. Upload another one?')) {
+                    return;
+                }
+            }
+            
+            photos[today] = {
+                data: photoData,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`${type}Photos`, JSON.stringify(photos));
+            
+            // Clear preview and photo data
+            document.getElementById(`${type}Preview`).innerHTML = '';
+            document.getElementById(`${type}SaveBtn`).style.display = 'none';
+            if (type === 'bath') {
+                bathPhotoData = null;
+            } else if (type === 'outfit') {
+                outfitPhotoData = null;
+            } else {
+                laundryPhotoData = null;
+            }
+            
+            // Reload gallery
+            loadGallery(type);
+            updateAllStats();
+            checkTaskStatus();
+            
+            const messages = {
+                bath: 'Great job staying clean! 🛁✨ I\'m so proud of you!',
+                outfit: 'Good job! Fresh jetty = Fresh you! 🩲😊',
+                laundry: 'Awesome! Clean clothes for the week! 🧺✨'
+            };
+            
+            showMessage(type, `${messages[type]} Photo saved for ${today}`, 'success');
+        }
+
+        function loadGallery(type) {
+            const gallery = document.getElementById(`${type}Gallery`);
+            const photos = JSON.parse(localStorage.getItem(`${type}Photos`) || '{}');
+            
+            gallery.innerHTML = '';
+            
+            const dates = Object.keys(photos).sort((a, b) => {
+                const dateA = new Date(a.split('/').reverse().join('-'));
+                const dateB = new Date(b.split('/').reverse().join('-'));
+                return dateB - dateA;
+            });
+            
+            dates.forEach(date => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `
+                    <img src="${photos[date].data}" alt="${type} photo from ${date}">
+                    <div class="date-label">${date}</div>
+                    <button class="delete-btn" onclick="deletePhoto('${type}', '${date}')">×</button>
+                `;
+                gallery.appendChild(item);
+            });
+        }
+
+        function deletePhoto(type, date) {
+            if (confirm(`Delete ${type} photo from ${date}?`)) {
+                const photos = JSON.parse(localStorage.getItem(`${type}Photos`) || '{}');
+                delete photos[date];
+                localStorage.setItem(`${type}Photos`, JSON.stringify(photos));
+                loadGallery(type);
+                updateAllStats();
+                checkTaskStatus();
+            }
+        }
+
+        function isBathDueToday() {
+            const bathPhotos = JSON.parse(localStorage.getItem('bathPhotos') || '{}');
+            const dates = Object.keys(bathPhotos).sort((a, b) => {
+                const dateA = new Date(a.split('/').reverse().join('-'));
+                const dateB = new Date(b.split('/').reverse().join('-'));
+                return dateB - dateA;
+            });
+            
+            if (dates.length === 0) return true; // First bath is always due
+            
+            const lastBathDate = new Date(dates[0].split('/').reverse().join('-'));
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            lastBathDate.setHours(0, 0, 0, 0);
+            
+            const daysDiff = Math.floor((today - lastBathDate) / (1000 * 60 * 60 * 24));
+            
+            return daysDiff >= 2; // Bath due every other day (2 days gap)
+        }
+
+        function getThisWeekLaundry() {
+            const laundryPhotos = JSON.parse(localStorage.getItem('laundryPhotos') || '{}');
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+            startOfWeek.setHours(0, 0, 0, 0);
+            
+            return Object.keys(laundryPhotos).filter(dateStr => {
+                const photoDate = new Date(dateStr.split('/').reverse().join('-'));
+                return photoDate >= startOfWeek && photoDate <= today;
+            });
+        }
+
+        function updateAllStats() {
+            updateOutfitStreak();
+            updateBathStreak();
+            updateLaundryCount();
+            checkDressRepetition();
+        }
+
+        function updateOutfitStreak() {
+            const outfitPhotos = JSON.parse(localStorage.getItem('outfitPhotos') || '{}');
+            let streak = 0;
+            let currentDate = new Date();
+            
+            while (true) {
+                const dateStr = currentDate.toLocaleDateString('en-GB');
+                
+                if (outfitPhotos[dateStr]) {
+                    streak++;
+                    currentDate.setDate(currentDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            
+            document.getElementById('outfitStreak').textContent = streak;
+        }
+
+        function updateBathStreak() {
+            const bathPhotos = JSON.parse(localStorage.getItem('bathPhotos') || '{}');
+            const dates = Object.keys(bathPhotos).sort((a, b) => {
+                const dateA = new Date(a.split('/').reverse().join('-'));
+                const dateB = new Date(b.split('/').reverse().join('-'));
+                return dateB - dateA;
+            });
+            
+            let streak = 0;
+            let expectedDate = new Date();
+            expectedDate.setHours(0, 0, 0, 0);
+            
+            for (let i = 0; i < dates.length; i++) {
+                const photoDate = new Date(dates[i].split('/').reverse().join('-'));
+                photoDate.setHours(0, 0, 0, 0);
+                
+                const daysDiff = Math.floor((expectedDate - photoDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff <= 1) { // Allow same day or 1 day difference
+                    streak++;
+                    expectedDate = new Date(photoDate);
+                    expectedDate.setDate(expectedDate.getDate() - 2); // Next expected is 2 days before
+                } else {
+                    break;
+                }
+            }
+            
+            document.getElementById('bathStreak').textContent = streak;
+        }
+
+        function updateLaundryCount() {
+            const laundryPhotos = JSON.parse(localStorage.getItem('laundryPhotos') || '{}');
+            const count = Object.keys(laundryPhotos).length;
+            document.getElementById('laundryCount').textContent = count;
+        }
+
+        function checkDressRepetition() {
+            const outfitPhotos = JSON.parse(localStorage.getItem('outfitPhotos') || '{}');
+            const laundryPhotos = JSON.parse(localStorage.getItem('laundryPhotos') || '{}');
+            
+            // Find last laundry date
+            const laundryDates = Object.keys(laundryPhotos).sort((a, b) => {
+                const dateA = new Date(a.split('/').reverse().join('-'));
+                const dateB = new Date(b.split('/').reverse().join('-'));
+                return dateB - dateA;
+            });
+            
+            let outfitsSinceLastLaundry = 0;
+            
+            if (laundryDates.length > 0) {
+                const lastLaundryDate = new Date(laundryDates[0].split('/').reverse().join('-'));
+                
+                Object.keys(outfitPhotos).forEach(dateStr => {
+                    const outfitDate = new Date(dateStr.split('/').reverse().join('-'));
+                    if (outfitDate > lastLaundryDate) {
+                        outfitsSinceLastLaundry++;
+                    }
+                });
+            } else {
+                outfitsSinceLastLaundry = Object.keys(outfitPhotos).length;
+            }
+            
+            document.getElementById('outfitsSinceLastLaundry').textContent = outfitsSinceLastLaundry;
+            
+            const warningBox = document.getElementById('laundryWarningBox');
+            
+            if (outfitsSinceLastLaundry >= 7) {
+                warningBox.style.display = 'block';
+            } else {
+                warningBox.style.display = 'none';
+            }
+        }
+
+        function checkTaskStatus() {
+            const today = new Date().toLocaleDateString('en-GB');
+            
+            // Check jetty change status (daily)
+            const outfitPhotos = JSON.parse(localStorage.getItem('outfitPhotos') || '{}');
+            const outfitStatus = document.getElementById('outfitStatus');
+            const outfitReminder = document.getElementById('outfitReminder');
+            
+            if (outfitPhotos[today]) {
+                outfitStatus.textContent = '✅ Done for today!';
+                outfitStatus.style.color = '#28a745';
+                outfitReminder.style.display = 'none';
+            } else {
+                outfitStatus.textContent = '❌ Not done yet - Change your jetty!';
+                outfitStatus.style.color = '#dc3545';
+                outfitReminder.style.display = 'inline-block';
+            }
+            
+            // Check bath status (alternate day)
+            const bathPhotos = JSON.parse(localStorage.getItem('bathPhotos') || '{}');
+            const bathStatus = document.getElementById('bathStatus');
+            const bathReminder = document.getElementById('bathReminder');
+            
+            if (bathPhotos[today]) {
+                bathStatus.textContent = '✅ Done for today!';
+                bathStatus.style.color = '#28a745';
+                bathReminder.style.display = 'none';
+            } else if (isBathDueToday()) {
+                bathStatus.textContent = '❌ Bath due today!';
+                bathStatus.style.color = '#dc3545';
+                bathReminder.style.display = 'inline-block';
+            } else {
+                bathStatus.textContent = '😊 Not needed today (alternate day)';
+                bathStatus.style.color = '#6c757d';
+                bathReminder.style.display = 'none';
+            }
+            
+            // Check laundry status (weekly)
+            const laundryStatus = document.getElementById('laundryStatus');
+            const laundryReminder = document.getElementById('laundryReminder');
+            const thisWeekLaundry = getThisWeekLaundry();
+            
+            if (thisWeekLaundry.length > 0) {
+                laundryStatus.textContent = '✅ Done this week!';
+                laundryStatus.style.color = '#28a745';
+                laundryReminder.style.display = 'none';
+            } else {
+                laundryStatus.textContent = '❌ Needed this week!';
+                laundryStatus.style.color = '#dc3545';
+                laundryReminder.style.display = 'inline-block';
+            }
+        }
+
+        function saveTotalDresses() {
+            const totalDresses = document.getElementById('totalDresses').value;
+            localStorage.setItem('totalDresses', totalDresses);
+            checkDressRepetition();
+        }
+
+        function loadTotalDresses() {
+            // No longer needed - removed total dresses counter
+        }
+
+        function updateStreak() {
+            // Legacy function - now using separate streak tracking
+            updateAllStats();
+        }
+
+        function showMessage(type, text, className) {
+            const message = document.getElementById(`${type}Message`);
+            message.textContent = text;
+            message.className = `message ${className}`;
+            message.style.display = 'block';
+            
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
